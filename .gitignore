@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Data
+*.csv
+*.json
+*.dataset
+*.pt
+
+# MacOS
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
