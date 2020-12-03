@@ -2,7 +2,7 @@
 This repository was crated for initial analysis of Graph Neural Networks on hypergraphs. The main goal is a comparison results between hypergraphs and graphs using different data representation and different models.
 
 ## Data storage
-Data are stored in Grakn (grakn.ai)[https://grakn.ai] - open-source knowledge graph. It is designed to store data represented as a [hypergraph](https://en.wikipedia.org/wiki/Hypergraph). It enables to create hyperedges which are non-pair wise relationships. Moreover, hyperedges can link other hyperedges. Considering these features from Data Representation point of view, Grakn provides an opportunity to build a rich data structure, which can be further 'flatten' to less expresive forms.
+Data are stored in Grakn [grakn.ai](https://grakn.ai) - open-source knowledge graph. It is designed to store data represented as a [hypergraph](https://en.wikipedia.org/wiki/Hypergraph). It enables to create hyperedges which are non-pair wise relationships. Moreover, hyperedges can link other hyperedges. Considering these features from Data Representation point of view, Grakn provides an opportunity to build a rich data structure, which can be further 'flatten' to less expresive forms.
 
 
 ## Data
