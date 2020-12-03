@@ -77,7 +77,7 @@ def transform_grakn_hypergraph():
                     ["j", "pj"]
                     ]
     file_name = "raw_relationship_data.csv"
-    transform_data(file_name, edges_tuples, output_dir = 'grakn_hypergraph/', undirected=True)
+    transform_data(file_name, edges_tuples, output_dir = 'grakn_hypergraph/', undirected=False)
 
 if __name__ == "__main__":
     transform_graph()

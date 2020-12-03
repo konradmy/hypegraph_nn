@@ -6,6 +6,7 @@ import random
 from torch_geometric.data import DataLoader
 from torch_geometric.data import InMemoryDataset
 from torch_geometric.utils import train_test_split_edges
+import os.path as osp
 
 def get_biograkn_data(edge_csv_file_path, nodes_labs_file_path, task = 'node', val_ratio=0.3, test_ratio=0.3):
     '''
@@ -78,14 +79,15 @@ def get_process_file_path(graph_type):
         task: Graph NN task ('node', 'link')
         graph_type: Type of the data representation ('casual_graph', 'hypergraph', 'grakn_hypergraph')
     '''
-    file_path = '../../data/biograkn/'
-    
+    # file_path = '../../data/biograkn/'
+    file_path = osp.join(osp.dirname(osp.realpath(__file__)), '..', '..', 'data', 'biograkn')
+    file_path = str(file_path)
     if graph_type == 'casual_graph':
-        file_path = file_path + 'casual_graph/encoded/'
+        file_path = file_path + '/casual_graph/encoded/'
     elif graph_type == 'hypergraph':
-        file_path = file_path + 'hypergraph/encoded/'
+        file_path = file_path + '/hypergraph/encoded/'
     elif graph_type == 'grakn_hypergraph':
-        file_path = file_path + 'grakn_hypergraph/encoded/'
+        file_path = file_path + '/grakn_hypergraph/encoded/'
     else:
         raise RuntimeError('Unknown graph type.')
 

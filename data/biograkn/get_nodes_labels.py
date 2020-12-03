@@ -53,7 +53,8 @@ def save_dict_as_json(enc_dict, output_dir):
 
 def graph_labels():
     raw_df = "raw_relationship_data.csv"
-    get_labels(raw_df, output_dir='casual_graph/')
+    read_cols = ["a", "g1", "g2", "j", "per", "pub", "v1", "v2"]
+    get_labels(raw_df, output_dir='casual_graph/', read_cols=read_cols)
 
 def grakn_hypergraph_labels():
     raw_df = "raw_relationship_data.csv"
