@@ -15,7 +15,7 @@ So far no features has been added and GNN Stack learns relationships based on gr
 ## Models
 
 * **GCNConv** - described in [“Semi-supervised Classification with Graph Convolutional Networks”](https://arxiv.org/abs/1609.02907) paper. [PyTorch GCNConv model](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html#torch_geometric.nn.conv.GCNConv)
-* **GraphSAGE** - described in ["Inductive Representation Learning on Large Graphs”] (https://arxiv.org/abs/1706.02216) paper. [PyTorch SAGEConv model](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html#torch_geometric.nn.conv.SAGEConv)
+* **GraphSAGE** - described in ["Inductive Representation Learning on Large Graphs”](https://arxiv.org/abs/1706.02216) paper. [PyTorch SAGEConv model](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html#torch_geometric.nn.conv.SAGEConv)
 * **GAT** - desribed in [“Graph Attention Networks”](https://arxiv.org/abs/1710.10903) paper. [PyTorch SAGEConv model](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html#torch_geometric.nn.conv.GATConv)
 * **HypergraphConv** - described in [“Hypergraph Convolution and Hypergraph Attention”](https://arxiv.org/abs/1901.08150) paper. [PyTorch HypergraphConv model](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html#torch_geometric.nn.conv.HypergraphConv)
 * **HyperGraphConv extension**
