@@ -51,3 +51,9 @@ This representation is referred as *hypergraph* in a code.
 This is the starting method of data representation. Hyperedges can can link many nodes (other hyperedges). It can also link hyperedges with nodes.
 
 This representation is referred as *grakn_hypergraph* in a code.
+
+## Repository structure
+
+## Examples
+
+
