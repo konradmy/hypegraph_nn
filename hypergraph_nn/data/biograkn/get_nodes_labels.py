@@ -60,6 +60,11 @@ def grakn_hypergraph_labels():
     raw_df = "raw_relationship_data.csv"
     get_labels(raw_df, output_dir='grakn_hypergraph/')
 
+def hypergraph_to_graph_labels():
+    raw_df = "raw_relationship_data.csv"
+    get_labels(raw_df, output_dir='hypergraph_to_graph/')
+
 if __name__ == "__main__":
     graph_labels()
     grakn_hypergraph_labels()
+    hypergraph_to_graph_labels()

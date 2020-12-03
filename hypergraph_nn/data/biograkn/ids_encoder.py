@@ -32,7 +32,14 @@ def encode_grakn_hypergraph():
     output_path = 'grakn_hypergraph/encoded/'
     encode_ids(edge_csv_file_path, nodes_labs_file_path, output_path)
 
+def encode_hypergraph_to_graph():
+    edge_csv_file_path = 'hypergraph_to_graph/all_edges_index.csv'
+    nodes_labs_file_path = 'hypergraph_to_graph/nodes_labels.csv'
+    output_path = 'hypergraph_to_graph/encoded/'
+    encode_ids(edge_csv_file_path, nodes_labs_file_path, output_path)
+
 if __name__ == "__main__":
     encode_graph()
     encode_grakn_hypergraph()
+    encode_hypergraph_to_graph()
 

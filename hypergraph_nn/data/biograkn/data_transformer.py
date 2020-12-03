@@ -59,7 +59,21 @@ def transform_graph():
 
 def transform_hypergraph():
     ## To be implemented...
-    #Lack of multiple relationships in a current graph
+    #Lack of multiple relationships in a current graph, so model will end up with casual graph created from hypergraph
+    edges_tuples = [["pub", "m"],
+                    ["g1", "mgr"],
+                    ["g2", "mgr"],
+                    ["g1", "gva1"],
+                    ["v1", "gva1"],
+                    ["g2", "gva2"],
+                    ["v2", "gva2"],
+                    ["pub", "a"],
+                    ["per", "a"],
+                    ["pub", "pj"],
+                    ["j", "pj"]
+                    ]
+    file_name = "raw_relationship_data.csv"
+    transform_data(file_name, edges_tuples, output_dir = 'hypergraph/', undirected=False)
     return None
 
 def transform_grakn_hypergraph():
@@ -79,6 +93,24 @@ def transform_grakn_hypergraph():
     file_name = "raw_relationship_data.csv"
     transform_data(file_name, edges_tuples, output_dir = 'grakn_hypergraph/', undirected=False)
 
+def transform_hypergraph_to_graph():
+    edges_tuples = [["pub", "m"],
+                    ["mgr", "m"],
+                    ["g1", "mgr"],
+                    ["g2", "mgr"],
+                    ["g1", "gva1"],
+                    ["v1", "gva1"],
+                    ["g2", "gva2"],
+                    ["v2", "gva2"],
+                    ["pub", "a"],
+                    ["per", "a"],
+                    ["pub", "pj"],
+                    ["j", "pj"]
+                    ]
+    file_name = "raw_relationship_data.csv"
+    transform_data(file_name, edges_tuples, output_dir = 'hypergraph_to_graph/', undirected=True)
+
 if __name__ == "__main__":
     transform_graph()
     transform_grakn_hypergraph()
+    transform_hypergraph_to_graph()

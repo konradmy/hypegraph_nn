@@ -77,7 +77,7 @@ def get_process_file_path(graph_type):
         return a file path to get edge and nodes csv files for a given task and graph type
         Args:
         task: Graph NN task ('node', 'link')
-        graph_type: Type of the data representation ('casual_graph', 'hypergraph', 'grakn_hypergraph')
+        graph_type: Type of the data representation ('casual_graph', 'hypergraph', 'grakn_hypergraph', 'hypergraph_to_graph')
     '''
     # file_path = '../../data/biograkn/'
     file_path = osp.join(osp.dirname(osp.realpath(__file__)), '..', '..', 'data', 'biograkn')
@@ -88,6 +88,8 @@ def get_process_file_path(graph_type):
         file_path = file_path + '/hypergraph/encoded/'
     elif graph_type == 'grakn_hypergraph':
         file_path = file_path + '/grakn_hypergraph/encoded/'
+    elif graph_type == 'hypergraph_to_graph':
+        file_path = file_path + '/hypergraph_to_graph/encoded/'
     else:
         raise RuntimeError('Unknown graph type.')
 
@@ -122,7 +124,9 @@ if __name__ == "__main__":
     dataset_lgh = BiograknDataset('./link_pred/grakn_hypergraph/', task = 'link', graph_type = 'grakn_hypergraph')
     dataset_ng = BiograknDataset('./nodes_label/casual_graph/', task = 'node', graph_type = 'casual_graph')
     dataset_ngh = BiograknDataset('./nodes_label/grakn_hypergraph/', task = 'node', graph_type = 'grakn_hypergraph')
+    dataset_htg = BiograknDataset('./nodes_label/hypergraph_to_graph/', task = 'node', graph_type = 'hypergraph_to_graph')
     print(dataset_lg[0], '\n\n')
     print(dataset_lgh[0], '\n\n')
     print(dataset_ng[0], '\n\n')
     print(dataset_ngh[0], '\n\n')
+    print(dataset_htg[0], '\n\n')
