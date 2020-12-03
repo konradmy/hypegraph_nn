@@ -14,8 +14,8 @@ import torch_geometric.nn as pyg_nn
 from torch_geometric.nn import GAE
 from torch_geometric.utils import train_test_split_edges
 
-import hypegraph_nn.models.models as models
-import hypegraph_nn.datasets.biograkn.biograkn_dataset as biograkn_dataset
+import hypergraph_nn.models.models as models
+import hypergraph_nn.datasets.biograkn.biograkn_dataset as biograkn_dataset
 import os.path as osp
 
 from sklearn.metrics import average_precision_score
@@ -93,7 +93,7 @@ def train(dataset, args):
         raise RuntimeError("Unknown task.")
 
     scheduler, opt = build_optimizer(args, model.parameters())
-    print("Training \nModel: {}, Data representation: {}. Dataset: {}, Task type: {}". format(args.model_type, args.graph_type, args.dataset, args.task))
+    print("Training \nModel: {}, Data representation: {}. Dataset: {}, Task type: {}". format(args.model_name, args.graph_type, args.dataset, args.task))
     for epoch in range(args.epochs):
         total_loss = 0
         model.train()
@@ -167,7 +167,7 @@ def main():
     task_path = 'nodes_label' if task == 'node' else 'link_pred'
     path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'datasets', 'biograkn', task_path, graph_type)
     if args.dataset == 'biograkn':
-        dataset = biograkn_dataset.BiograknDataset(path, task = 'node', graph_type = 'grakn_hypergraph')
+        dataset = biograkn_dataset.BiograknDataset(path, task = task, graph_type = graph_type)
     train(dataset, args) 
 
 if __name__ == '__main__':
