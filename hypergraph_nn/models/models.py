@@ -30,7 +30,7 @@ class GNNStack(torch.nn.Module):
             return pyg_nn.SAGEConv
         elif model_name == 'GAT':
             return pyg_nn.GATConv
-        elif model_name == 'Hypergraph':
+        elif model_name == 'HypergraphConv':
             pyg_nn.HypergraphConv
         else:
             raise RuntimeError('Unknown convolutional model.')
