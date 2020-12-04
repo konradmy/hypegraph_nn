@@ -93,4 +93,14 @@ This representation is referred as *grakn_hypergraph* in a code.
   * models - contains scripts for GNN models (described in 'Models' section)
 
 ## Examples
-Once datapipeline has been run 'run.sh' script can be executed to run training loops for each model.
+In order to run these examples one needs to have Python 3 installed. 
+
+Required packages can be installed from 'requirement.txt' file using pip using the following command:
+
+```
+pip install -r requirements.txt
+```
+
+In order to run data pipeline navigate to 'hypergraph_nn/hypergraph_nn/data/biograkn/' and run 'data_pipeline.sh'.
+
+Once data pipeline has been run, 'run.sh' script can be executed to run training loops for each model.
