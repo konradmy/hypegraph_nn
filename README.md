@@ -90,7 +90,7 @@ This representation is referred as *grakn_hypergraph* in a code.
 * hypergraph_nn/hypergraph_nn/
   * data - devided further into subdirectories for datasets. Each subdirectory contains scripts and files for Data Load and Transformation (described in 'Load' and 'Transformation' in 'Data Pipeline' section) 
   * datasets - devided further into subdirectories for datasets. Each subdirectory contains scripts and files for PyTorch Datasets (described in 'PyTorch Dataset' in 'Data Pipeline' section)
-  * models - contains scripts for GNN models
+  * models - contains scripts for GNN models (described in 'Models' section)
 
 ## Examples
 Once datapipeline has been run 'run.sh' script can be executed to run training loops for each model.
