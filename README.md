@@ -19,7 +19,7 @@ There are following scripts for data transormation:
 
 * 'data_transformer.py' - data are transormed to edges index - two columns - one for source node and one for target node. 
 * 'get_nodes_labels.py' - data are transformed to csv with two columns - one for node id and one for node label
-* 'ids_encoder.py' - nodes ids are encoded to be within the range 0..N-1 where N is the bumber of nodes. It's required for some PyTorch models.
+* 'ids_encoder.py' - nodes ids are encoded to be within the range 0..N-1 where N is the number of nodes. It's required for some PyTorch models.
 
 ### PyTorch Dataset
 At the final step PyTorch 'Dataset' class is created for each of the dataset, in order to work seamlessly with PyTorch models.
