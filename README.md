@@ -5,7 +5,24 @@ This repository was crated for initial analysis of Graph Neural Networks on hype
 Data are stored in Grakn [(grakn.ai)](https://grakn.ai) - open-source knowledge graph. It is designed to store data represented as a [hypergraph](https://en.wikipedia.org/wiki/Hypergraph). It enables to create hyperedges which are non-pair wise relationships. Moreover, hyperedges can link other hyperedges. Considering these features from Data Representation point of view, Grakn provides an opportunity to build a rich data structure, which can be further 'flatten' to less expresive forms.
 
 
-## Data load
+## Data pipeline
+### Load
+As the initial analysis is conducted on relatively small graphs, the whole queried subgraphs can be stored without a concern of size of data because of it's redundancy. Raw queried data are stored in a following format:
+* columns contain queried nodes and hyperedges types
+* rows contain singular subgraph (path) returned by query
+
+In this repository these data are stored in csv files *raw_relationship_data.csv* in each directory for a specific dataset e.g. for biograkn these data will be present in 'hypergraph_nn/hypergraph_nn/data/biograkn' directory after running script. 
+Similarily script for running load for a specific dataset can be found in a directory for this dataset e.g. for biograkn these data will be present in 'hypergraph_nn/hypergraph_nn/data/biograkn'.
+
+### Transformation
+There are following scripts for data transormation:
+
+* 'data_transformer.py' - data are transormed to edges index - two columns - one for source node and one for target node. 
+* 'get_nodes_labels.py' - data are transformed to csv with two columns - one for node id and one for node label
+* 'ids_encoder.py' - nodes ids are encoded to be within the range 0..N-1 where N is the bumber of nodes. It's required for some PyTorch models.
+
+### PyTorch Dataset
+At the final step PyTorch 'Dataset' class is created for each of the dataset, in order to work seamlessly with PyTorch models.
 
 
 ## Data
@@ -70,5 +87,10 @@ This representation is referred as *grakn_hypergraph* in a code.
 
 ## Repository structure
 
-## Examples
+* hypergraph_nn/hypergraph_nn/
+  * data - devided further into subdirectories for datasets. Each subdirectory contains scripts and files for Data Load and Transformation (described in 'Load' and 'Transformation' in 'Data Pipeline' section) 
+  * datasets - devided further into subdirectories for datasets. Each subdirectory contains scripts and files for PyTorch Datasets (described in 'PyTorch Dataset' in 'Data Pipeline' section)
+  * models - contains scripts for GNN models
 
+## Examples
+Once datapipeline has been run 'run.sh' script can be executed to run training loops for each model.
