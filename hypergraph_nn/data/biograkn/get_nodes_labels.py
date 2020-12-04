@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import re
+import utils
 
 def get_labels(edges_file, output_dir = "", read_cols = None, cols_to_rename=None):
     '''
@@ -10,6 +11,7 @@ def get_labels(edges_file, output_dir = "", read_cols = None, cols_to_rename=Non
     read_cols: list of columns names to be transofmed from provided files
     cols_to_rename: dictionary used to rename columns (which are used as labels); useful if several columns contains the same type of nodes e.g. 'g1' and 'g2' both have label 'gene' but appear separately because of specific graph traversion path
     '''
+    utils.create_directory(output_dir)
     usecols = None
     if read_cols != None:
         usecols = read_cols

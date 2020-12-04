@@ -7,6 +7,7 @@ from torch_geometric.data import DataLoader
 from torch_geometric.data import InMemoryDataset
 from torch_geometric.utils import train_test_split_edges
 import os.path as osp
+import os
 
 def get_biograkn_data(edge_csv_file_path, nodes_labs_file_path, task = 'node', val_ratio=0.3, test_ratio=0.3):
     '''
@@ -46,6 +47,7 @@ class BiograknDataset(InMemoryDataset):
         self.graph_type = graph_type
         super(BiograknDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
+        create_directory(root)
         
     @property
     def raw_file_names(self):
@@ -117,7 +119,9 @@ def create_masks(nodes_list, val_ratio, test_ratio):
     
     return datasets
 
-
+def create_directory(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 if __name__ == "__main__":
     dataset_lg = BiograknDataset('./link_pred/casual_graph/', task = 'link', graph_type = 'casual_graph')

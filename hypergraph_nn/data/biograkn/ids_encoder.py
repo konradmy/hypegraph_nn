@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+import utils
 
 def encode_ids(edge_csv_file_path, nodes_labs_file_path, output_path):
     '''
@@ -9,6 +10,7 @@ def encode_ids(edge_csv_file_path, nodes_labs_file_path, output_path):
     nodes_labs_file_path: filepath to a two columns csv files with nodes ids and their labels
     output_path: file directory to save encoded dataframes
     '''
+    utils.create_directory(output_path)
     edge_index_df = pd.read_csv(edge_csv_file_path)
     nodes_labels = pd.read_csv(nodes_labs_file_path)
 

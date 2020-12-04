@@ -1,4 +1,5 @@
 import pandas as pd
+import utils
 
 def transform_data(edges_file, edges_tuples, output_dir="", several_out_files=False, undirected=False):
     '''
@@ -10,7 +11,7 @@ def transform_data(edges_file, edges_tuples, output_dir="", several_out_files=Fa
     several_out_files: if True saves transformed dataframes separately for each tuple from 'edge_tuples' (default: False)
     undirected: if True creates an edge_index file/files for undirected graph
     '''
-
+    utils.create_directory(output_dir)
     edges_df = pd.read_csv(edges_file)
     for column in edges_df.columns:
         edges_df[column] = edges_df[column].str.replace("V","")
