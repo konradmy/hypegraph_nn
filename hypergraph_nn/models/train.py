@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 import time
 
 import networkx as nx
@@ -18,6 +19,7 @@ import hypergraph_nn.models.models as models
 import hypergraph_nn.datasets.biograkn.biograkn_dataset as biograkn_dataset
 import os.path as osp
 
+from tensorboardX import SummaryWriter
 from sklearn.metrics import average_precision_score
 
 def arg_parse():
@@ -79,7 +81,7 @@ def build_optimizer(args, params):
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.opt_restart)
     return scheduler, optimizer
 
-def train(dataset, args):
+def train(dataset, args, writer = None):
     task = args.task
     test_loader = loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True)
 
@@ -113,12 +115,18 @@ def train(dataset, args):
             opt.step()
             total_loss += loss.item() * batch.num_graphs
         total_loss /= len(loader.dataset)
-        print(total_loss)
+        if writer == None:
+            print(total_loss)
+        else:
+            writer.add_scalar("loss", total_loss, epoch)
 
         if epoch % 10 == 0:
             test_acc = test(loader, model, task = task)
-            metric_text = '######Test accuracy#####' if task == 'node' else '######Test precision#####'
-            print(test_acc, metric_text)
+            metric_text = 'test accuracy' if task == 'node' else 'test precision'
+            if writer == None:
+                print(test_acc, metric_text)
+            else:
+                writer.add_scalar(metric_text, test_acc, epoch)
 
 def test(loader, model, task, is_validation=False):
     model.eval()
@@ -140,7 +148,6 @@ def test(loader, model, task, is_validation=False):
         return correct / total
     else:
         test_prec = []
-        prec_items = []
         y = []
         pred = []
         for data in loader:
@@ -164,11 +171,13 @@ def main():
     args = arg_parse()
     task = args.task
     graph_type = args.graph_type
+    model_name = args.model_name
+    writer = SummaryWriter("./log/" + task + '/' + graph_type + '/' + model_name + datetime.now().strftime("%Y%m%d-%H%M%S"))
     task_path = 'nodes_label' if task == 'node' else 'link_pred'
     path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'datasets', 'biograkn', task_path, graph_type)
     if args.dataset == 'biograkn':
         dataset = biograkn_dataset.BiograknDataset(path, task = task, graph_type = graph_type)
-    train(dataset, args) 
+    train(dataset, args, writer = writer) 
 
 if __name__ == '__main__':
     main()
