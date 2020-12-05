@@ -49,7 +49,7 @@ This model is a slightly modified version of the original *HypergraphConv* model
 In order to be in consonance with the original paper the following notation is used: 
 N' = |V'| 
 
-Finally, all of the calculations in the paper with regards to N and V should be replaced with respectively N' and V' instead.
+Finally, all of the calculations in the paper with regards to N and V should be replaced with respectively N' and V'.
 
 
 This slight modification leads embedded hyperedges (hyperedges linked by other hyperedges) to have their own feature vector. If a given set of hyperedges doesn't have any straightforward features the feature vector might consist of values 1.
