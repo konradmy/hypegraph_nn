@@ -59,6 +59,8 @@ def arg_parse():
                         help='Type of GNN task', default='node')
     parser.add_argument('--graph_type', type=str,
                         help='Type of data representation', default='casual_graph')
+    parser.add_argument('--metrics_for_labels', type=str,
+                        help='Print metrics for each label separately', default='False')
 
     return parser.parse_args()
 
@@ -93,9 +95,10 @@ def train(dataset, args, writer = None):
                             args)
     else:
         raise RuntimeError("Unknown task.")
-
+    metrics_for_labels = True if args.metrics_for_labels == 'True' else False
     scheduler, opt = build_optimizer(args, model.parameters())
     print("Training \nModel: {}, Data representation: {}. Dataset: {}, Task type: {}". format(args.model_name, args.graph_type, args.dataset, args.task))
+    metric_text = 'test accuracy' if task == 'node' else 'test precision'
     for epoch in range(args.epochs):
         total_loss = 0
         model.train()
@@ -121,14 +124,16 @@ def train(dataset, args, writer = None):
             writer.add_scalar("loss", total_loss, epoch)
 
         if epoch % 10 == 0:
-            test_acc = test(loader, model, task = task)
-            metric_text = 'test accuracy' if task == 'node' else 'test precision'
+            test_acc, _ = test(loader, model, task = task)
             if writer == None:
                 print(test_acc, metric_text)
             else:
                 writer.add_scalar(metric_text, test_acc, epoch)
+        if metrics_for_labels == True and task == 'link' and epoch == args.epochs -1:
+            _, labels_metrics = test(loader, model, task = task, metrics_for_labels=metrics_for_labels)
+            print('{} for labels:\n {}'.format(metric_text, labels_metrics))
 
-def test(loader, model, task, is_validation=False):
+def test(loader, model, task, is_validation=False, metrics_for_labels = False):
     model.eval()
     if task == 'node':
         correct = 0
@@ -145,11 +150,12 @@ def test(loader, model, task, is_validation=False):
         total = 0
         for data in loader.dataset:
             total += torch.sum(data.test_mask).item()
-        return correct / total
+        return correct / total, None
     else:
         test_prec = []
         y = []
         pred = []
+        labels = []
         for data in loader:
             with torch.no_grad():
                 z = model.encode(data)
@@ -162,10 +168,57 @@ def test(loader, model, task, is_validation=False):
                 neg_pred = model.decoder(z, data.test_neg_edge_index, sigmoid=True)
                 pred.append(pos_pred)
                 pred.append(neg_pred)
+                if metrics_for_labels:
+                    labels_temp = get_labels_for_nodes(data.y, data.test_pos_edge_index[1], data.test_neg_edge_index[1])
+                    labels.append(labels_temp[0])
+                    labels.append(labels_temp[1])
         y = torch.cat(y, dim=0)
         pred = torch.cat(pred, dim=0)
+        labels = torch.cat(labels, dim=0) if metrics_for_labels else []
 
-        return average_precision_score(y, pred)
+        if metrics_for_labels:
+            return average_precision_score(y, pred), metric_for_label(y, pred, labels, average_precision_score)
+        else:
+            return average_precision_score(y, pred), None
+
+def metric_for_label(y_true, y_pred, labels, metric):
+    '''
+    Returns a dictionary with nodes labels as keys and metrics for a specific label as value
+    Args:
+    y_true - list of true target indices
+    y_pred - list of predicted target indices
+    labels = labels for which a given metrics should be applied
+    metric - metric function that which should be applied
+    '''
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    unique_lbls = np.unique(np.array(labels))
+    labels = labels.numpy()
+    metrics = {}
+    # print(labels.shape, y_true.shape, y_pred.shape)
+    for label in unique_lbls:
+        lbls_index_list = labels == label
+        # print(lbls_index_list)
+        # print(y_true[lbls_index_list].shape, y_pred[lbls_index_list].shape)
+        metrics[label] = metric(y_true[lbls_index_list], y_pred[lbls_index_list])
+
+    return metrics
+
+def get_labels_for_nodes(y, test_pos_edge_index, test_neg_edge_index):
+    '''
+    Returns list of labels for nodes_ids provided in test_pos_edge_index list and test_neg_edge_index list
+    Args:
+    y = original list of labels
+    test_pos_edge_index - list of indices from test_pos_edge_index that labels should be retrieved
+    test_neg_edge_index - list of indices from test_neg_edge_index that labels should be retrieved
+    '''
+    labels = []
+    temp_labels = y
+    temp_pos_labels = [temp_labels[i] for i in test_pos_edge_index]
+    temp_neg_labels = [temp_labels[i] for i in test_neg_edge_index]
+    labels.append(torch.tensor(temp_pos_labels))
+    labels.append(torch.tensor(temp_neg_labels))
+    return labels
 
 def main():
     args = arg_parse()
