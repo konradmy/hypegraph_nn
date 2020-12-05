@@ -8,8 +8,9 @@ from torch_geometric.data import InMemoryDataset
 from torch_geometric.utils import train_test_split_edges
 import os.path as osp
 import os
+from sklearn.preprocessing import OneHotEncoder
 
-def get_biograkn_data(edge_csv_file_path, nodes_labs_file_path, task = 'node', val_ratio=0.3, test_ratio=0.3):
+def get_biograkn_data(edge_csv_file_path, nodes_labs_file_path, task = 'node', features = "ones", val_ratio=0.3, test_ratio=0.3):
     '''
     Returns pytorch 'Data' object from provided filepaths.
     Args:
@@ -25,7 +26,13 @@ def get_biograkn_data(edge_csv_file_path, nodes_labs_file_path, task = 'node', v
                            edge_index_df["target"]], dtype=torch.long)
     y = torch.tensor(nodes_labels["label"], dtype=torch.long)
     num_nodes = len(y)
-    x = torch.ones(num_nodes, 10)
+    if features == "ones":
+        x = torch.ones(num_nodes, 10)
+    elif features == 'labels':
+        encoder = OneHotEncoder(categories='auto')
+        features = nodes_labels["label"].values.reshape(-1, 1)
+        features = encoder.fit_transform(features)
+        x = torch.tensor(features.toarray(), dtype=torch.float32)
 
     if task == 'node':
         dataset_masks = create_masks(nodes_labels["node"], val_ratio, test_ratio)
@@ -42,9 +49,10 @@ class BiograknDataset(InMemoryDataset):
     '''
     Pytorch Dataset object for Biograkn data
     '''
-    def __init__(self, root, task = 'node', graph_type = 'casual_graph', transform=None, pre_transform=None):
+    def __init__(self, root, task = 'node', graph_type = 'casual_graph', features = 'ones', transform=None, pre_transform=None):
         self.task = task
         self.graph_type = graph_type
+        self.features = features
         super(BiograknDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
         create_directory(root)
@@ -68,7 +76,7 @@ class BiograknDataset(InMemoryDataset):
         edge_csv_file_path = file_path + 'all_edges_index.csv'
         nodes_labs_file_path = file_path + 'nodes_labels.csv'
 
-        data_list.append(get_biograkn_data(edge_csv_file_path, nodes_labs_file_path, task = self.task))
+        data_list.append(get_biograkn_data(edge_csv_file_path, nodes_labs_file_path, task = self.task, features = self.features))
 
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])

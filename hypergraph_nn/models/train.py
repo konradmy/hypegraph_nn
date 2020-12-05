@@ -61,6 +61,8 @@ def arg_parse():
                         help='Type of data representation', default='casual_graph')
     parser.add_argument('--metrics_for_labels', type=str,
                         help='Print metrics for each label separately', default='False')
+    parser.add_argument('--features', type=str,
+                        help='Node features which should be used', default='ones')
 
     return parser.parse_args()
 
@@ -225,11 +227,12 @@ def main():
     task = args.task
     graph_type = args.graph_type
     model_name = args.model_name
+    features = args.features
     writer = SummaryWriter("./log/" + task + '/' + graph_type + '/' + model_name + datetime.now().strftime("%Y%m%d-%H%M%S"))
     task_path = 'nodes_label' if task == 'node' else 'link_pred'
     path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'datasets', 'biograkn', task_path, graph_type)
     if args.dataset == 'biograkn':
-        dataset = biograkn_dataset.BiograknDataset(path, task = task, graph_type = graph_type)
+        dataset = biograkn_dataset.BiograknDataset(path, task = task, graph_type = graph_type, features=features)
     train(dataset, args, writer = writer) 
 
 if __name__ == '__main__':
