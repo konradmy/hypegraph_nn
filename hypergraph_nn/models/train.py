@@ -20,7 +20,7 @@ import hypergraph_nn.datasets.biograkn.biograkn_dataset as biograkn_dataset
 import os.path as osp
 
 from tensorboardX import SummaryWriter
-from sklearn.metrics import average_precision_score
+from sklearn.metrics import average_precision_score, accuracy_score
 
 def arg_parse():
     parser = argparse.ArgumentParser(description='GNN arguments.')
@@ -126,33 +126,34 @@ def train(dataset, args, writer = None):
             writer.add_scalar("loss", total_loss, epoch)
 
         if epoch % 10 == 0:
-            test_acc, _ = test(loader, model, task = task)
+            test_metric, _ = test(loader, model, task = task)
             if writer == None:
-                print(test_acc, metric_text)
+                print(test_metric, metric_text)
             else:
-                writer.add_scalar(metric_text, test_acc, epoch)
-        if metrics_for_labels == True and task == 'link' and epoch == args.epochs -1:
+                writer.add_scalar(metric_text, test_metric, epoch)
+        if metrics_for_labels == True and epoch == args.epochs -1:
             _, labels_metrics = test(loader, model, task = task, metrics_for_labels=metrics_for_labels)
             print('{} for labels:\n {}'.format(metric_text, labels_metrics))
 
 def test(loader, model, task, is_validation=False, metrics_for_labels = False):
     model.eval()
     if task == 'node':
-        correct = 0
+        pred = []
+        labels = []
         for data in loader:
             with torch.no_grad():
-                pred = model(data).max(dim=1)[1]
-                label = data.y
+                preds = model(data).max(dim=1)[1]
             
             mask = data.val_mask if is_validation else data.test_mask
-            pred = pred[mask]
-            label = data.y[mask]
-            correct += pred.eq(label).sum().item()
-        
-        total = 0
-        for data in loader.dataset:
-            total += torch.sum(data.test_mask).item()
-        return correct / total, None
+            pred.append(preds[mask])
+            labels.append(data.y[mask])
+
+        pred = torch.cat(pred, dim=0)
+        labels = torch.cat(labels, dim=0)
+        if metrics_for_labels:
+            return accuracy_score(labels, pred), metric_for_label(labels, pred, labels, accuracy_score)
+        else:
+            return accuracy_score(labels, pred), None
     else:
         test_prec = []
         y = []
